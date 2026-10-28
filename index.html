@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AkashiBlue 방향키 기록기</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background: #121212; color: white; padding: 15px; margin: 0; }
+        
+        /* 캐릭터 짤과 제목 영역 */
+        .header-box { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0; background: #1e1e1e; padding: 15px; border-radius: 12px; border: 2px solid #333; }
+        .header-box img { width: 120px; height: 120px; object-fit: contain; image-rendering: pixelated; border-radius: 8px; border: 2px solid #00ffcc; background: #000; }
+        .title-text h3 { margin: 0 0 5px 0; font-size: 22px; color: #00ffcc; }
+        .title-text p { margin: 0; font-size: 14px; color: #aaa; }
+
+        .pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 280px; margin: 0 auto; }
+        button.key-btn { padding: 22px; font-size: 26px; font-weight: bold; background: #333; color: #fff; border: 2px solid #555; border-radius: 12px; cursor: pointer; transition: background 0.1s; }
+        button.key-btn:active, button.key-btn.active { background: #00ffcc; color: #000; border-color: #00ffcc; }
+        .up { grid-column: 2; }
+        .left { grid-column: 1; grid-row: 2; }
+        .down { grid-column: 2; grid-row: 2; }
+        .right { grid-column: 3; grid-row: 2; }
+        
+        .action-row { display: flex; max-width: 280px; margin: 15px auto 0 auto; }
+        .btn-action { flex: 1; padding: 12px; font-size: 15px; font-weight: bold; border-radius: 8px; border: none; cursor: pointer; }
+        .clear-btn { background: #e74c3c; color: white; }
+
+        #log { margin: 20px auto; max-width: 280px; background: #222; padding: 15px; border-radius: 8px; text-align: left; height: 180px; overflow-y: auto; font-family: monospace; font-size: 16px; color: #00ffcc; border: 1px solid #444; }
+    </style>
+</head>
+<body>
+
+    <div class="header-box">
+        <!-- 깃허브에 같이 올릴 이미지 파일 (character.png) -->
+        <img src="character.png" alt="캐릭터 짤">
+        <div class="title-text">
+            <h3>방향키 기록기</h3>
+            <p>AkashiBlue</p>
+        </div>
+    </div>
+
+    <div class="pad">
+        <button id="btn-up" class="key-btn up" onclick="add('↑ (위)')">▲</button>
+        <button id="btn-left" class="key-btn left" onclick="add('← (왼쪽)')">◀</button>
+        <button id="btn-down" class="key-btn down" onclick="add('↓ (아래)')">▼</button>
+        <button id="btn-right" class="key-btn right" onclick="add('→ (오른쪽)')">▶</button>
+    </div>
+
+    <div class="action-row">
+        <button class="btn-action clear-btn" onclick="clearLog()">초기화</button>
+    </div>
+
+    <div id="log">기록 대기 중... (키보드 방향키도 가능)</div>
+
+    <script>
+        let logs = [];
+        
+        function add(key) {
+            logs.push(key); 
+            let logBox = document.getElementById('log');
+            logBox.innerHTML = logs.map((item, index) => `${index + 1}. ${item}`).join('<br>');
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        function clearLog() {
+            logs = [];
+            document.getElementById('log').innerHTML = '기록이 초기화되었습니다.';
+        }
+
+        // 키보드 방향키 눌렀을 때 이벤트 감지 및 기록
+        window.addEventListener('keydown', (e) => {
+            let btnId = '';
+            if (e.key === 'ArrowUp') { add('↑ (위)'); btnId = 'btn-up'; }
+            else if (e.key === 'ArrowDown') { add('↓ (아래)'); btnId = 'btn-down'; }
+            else if (e.key === 'ArrowLeft') { add('← (왼쪽)'); btnId = 'btn-left'; }
+            else if (e.key === 'ArrowRight') { add('→ (오른쪽)'); btnId = 'btn-right'; }
+
+            // 키보드로 누를 때 화면 버튼 반짝이는 효과
+            if (btnId) {
+                e.preventDefault(); // 스크롤 방지
+                let btn = document.getElementById(btnId);
+                btn.classList.add('active');
+                setTimeout(() => btn.classList.remove('active'), 150);
+            }
+        });
+    </script>
+</body>
+</html>
